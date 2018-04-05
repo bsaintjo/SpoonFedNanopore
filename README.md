@@ -1,22 +1,26 @@
 # SpoonFedNanopore
-The world's simplest open-source nanopore alignment and assembly pipeline. This is meant to be an educational tool that Just Works(TM), and walks a user through assembling a metagenome from raw nanopore reads. This pipeline also performs gene annotation using MetaGeneMark and gives the user taxanomic information through Mash.
+The world's simplest open-source nanopore alignment and assembly pipeline. This is meant to be an educational tool that Just Works(TM), and walks a user through assembling a genome from nanopore sequencing reads. This pipeline also performs gene annotation using MetaGeneMark and gives the user taxanomic information through Mash.
 
 ## Uses
 * Educational tool for teaching undergrads or high school students the basics of genome assembly
-* Simple tool for WIMP (What's In My Pot) analysis that doesn't require any external tools
-* Citizen scientist that wants to sequence whatever's on their roommate's toothbrush
+* WIMP (What's In My Pot) simplified analysis that doesn't require building dependencies
+* Citizen scientist that wants to sequence whatever is on their roommate's toothbrush
 
 ## Workflow
-![DirtPore Workflow](./images/diagram.png)
+![SpoonFedNanopore Workflow](./images/diagram.png)
 
-Reads are first classified based on genomic distance using 4mers using Mash. The reads are classified into bins which are then assembled into genomes using canu. The resulting assemblies are then blasted using TAXBLAST to see the taxanomic information from the sample. The pipeline also does simple gene annotation using MetaGeneMark.
+Reads are mapped to each other to give alignment data using `minimap2`. The genome(s) are assembled using `miniasm`. That assembly is then used with `mash` tool to quickly determine the taxa of the sample. Furthermore, we use `MetaGeneMark` in order to perform de novo gene annotation.
+
+This workflow is implemented in a Jupyter Notebook for ease of use as well as embedding educational information so that people that are being introduced to genome assembly can learn about the general principles of the tools and why the commands are used.
+
+This workflow has been optimized for ease of use and speed. The workflow should easily run on a normal laptop computer, and running the entire pipeline should take approximately 5 minutes with our example dataset (~25k nanopore reads, along with 4 small genomes). 
 
 ## Requirements
 Pipeline must be run on a computer with atleast 4 GB of RAM
 
 ## Dependencies
 * `docker`
-* `git`
+* web browser (Firefox, Chrome, etc.)
 
 ## Installation
 Install the Docker Community Edition [here](https://www.docker.com/community-edition) for your distribution.
@@ -33,14 +37,14 @@ $ git clone https://github.com/NCBI-Hackathons/SpoonFedNanopore.git
 $ cd SpoonFedNanopore/
 $ docker build .
 $ docker images
-# Use the hash given by this command, and replace YOURHASH with the Image ID given
-$ docker run -it -p 8888:8888 -v $PWD:/work YOURHASH
+# Use the hash given by this command, and replace IMAGEID with the most recent Image ID given
+$ docker run -it -p 8888:8888 -v $PWD:/work IMAGEID
 ```
-TODO instruction for building from docker store
 
+## TODO
+- Instruction for building from docker store
+- Script for building a custom Mash sketch database
 
-## Disclaimer
-Current workflow only implements the Canu assembly of raw reads and then the taxonomic information. Later steps will introduce the read clustering by Mash.
 
 ## References
 1. Li, H. (2016). Minimap and miniasm: fast mapping and de novo assembly for noisy long sequences. Bioinformatics 32(14), 2103–2110.
